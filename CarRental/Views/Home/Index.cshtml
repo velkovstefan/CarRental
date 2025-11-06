@@ -1,0 +1,132 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<main>
+
+   
+   
+
+        <section id="home" class="hero">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6 hero-content">
+                        <div class="hero-card">
+                            <h1 class="display-4 fw-bold">Find your car</h1>
+                            <form method="get" action="/Cars">
+                                <div class="row">
+                                    <select name="brand" class="form-control" value="">
+                                        <option value="">All Brands</option>
+                                        @foreach (var item in ViewBag.CarBrands)
+                                        {
+
+                                            if (item.Brand == @Request.QueryString["brand"])
+                                            {
+                                                <option value="@item.Brand" selected>@item.Brand</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@item.Brand">@item.Brand</option>
+                                            }
+
+                                        }
+                                    </select>
+                                </div>
+                                <div class="row">
+                                    <input type="number" name="minYear" class="form-control col me-1" value="@Request.QueryString["minYear"]" placeholder="Year From" />
+                                    <input type="number" name="maxYear" class="form-control col" value="@Request.QueryString["maxYear"]" placeholder="Year To" />
+                                </div>
+                                <div class="row">
+                                    <input type="number" name="minPrice" id="minPrice" class="form-control col me-1" value="@Request.QueryString["minPrice"]" placeholder="Min Price" />
+                                    <input type="number" name="maxPrice" id="maxPrice" class="form-control col" value="@Request.QueryString["maxPrice"]" placeholder="Max Price" />
+                                </div>
+                                <button class="btn btn-primary btn-lg pulse-button">Search</button>
+                            </form> 
+                            
+                        </div>
+                    </div>
+                    <div class="col-lg-6" style="height: -webkit-fill-available;">
+                        <img src="https://pngimg.com/d/alfa_romeo_PNG63.png" alt="Builder Interface" class="landingImg img-fluid rounded-4 shadow-lg hover-scale">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="features">
+            <div class="container">
+                <h2 class="text-center mb-5">A fleet that meets your needs</h2>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="feature-card">
+                            <div class="icon"><img src="https://static.vecteezy.com/system/resources/previews/044/859/071/non_2x/side-view-gray-car-free-png.png"/></div>
+                            <h3>City car</h3>
+                            <p>These range from compact and fuel-efficient city to eco-friendly model</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-card">
+                            <div class="icon"><img src="https://static.vecteezy.com/system/resources/previews/050/591/525/large_2x/side-view-of-silver-luxury-suv-car-isolated-on-transparent-background-free-png.png"/></div>
+                            <h3>Premium</h3>
+                            <p>You can choose from a wide range of premium vehicles made by legendary manufacturers</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-card">
+                            <div class="icon"><img src="https://static.vecteezy.com/system/resources/previews/067/937/661/non_2x/side-view-gray-sedan-electric-car-png.png" style="transform: scaleX(-1);" /></div>
+                            <h3>Electric</h3>
+                            <p>Discover our models of electric, hybrid or plug-in vehicles</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="gallery" class="gallery">
+            <div class="container">
+                <h2 class="text-center mb-5">Types</h2>
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="template-card">
+                            <img src="https://media.autoexpress.co.uk/image/private/s--LCeqbo22--/f_auto,t_content-image-desktop@1/v1714633753/autoexpress/2024/04/Suzuki%20Swift%202024-12.jpg" alt="Template 1" class="img-fluid">
+                            <div class="overlay">
+                                <h4>Small cars</h4>
+                                <button class="btn btn-light" onclick="window.location.href='/Cars?carType=SmallCar'">Preview</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="template-card">
+                            <img src="https://www.topgear.com/sites/default/files/news-listicle/image/10702-1.jpg?w=827&h=465" alt="Template 2" class="img-fluid">
+                            <div class="overlay">
+                                <h4>Sedans</h4>
+                                <button class="btn btn-light" onclick="window.location.href='/Cars?carType=Sedan'">Preview</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="template-card">
+                            <img src="https://www.topgear.com/sites/default/files/2025/10/Original-14355-enyaq-85-edition-lounge-019.jpg?w=827&h=465" alt="Template 3" class="img-fluid">
+                            <div class="overlay">
+                                <h4>SUVs</h4>
+                                <button class="btn btn-light" onclick="window.location.href='/Cars?carType=Off-road+Vehicle%2FPickup+Truck%2FSUV'">Preview</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        
+
+        <section class="cta" style="color:white;">
+            <div class="container text-center">
+                <h2>Exclusive offers</h2>
+                <p class="lead">Find best offers for your next car rental</p>
+                <button class="btn btn-light btn-lg" onclick="window.location.href='/Cars'">Here</button>
+            </div>
+        </section>
+
+       
+
+       
+</main>

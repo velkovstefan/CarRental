@@ -1,0 +1,27 @@
+﻿.gridDiv {
+    display:grid;
+    grid-template-columns: 50% 50%;
+    width:100%;
+    gap:15px;
+}
+.dl-horizontal dt {
+    border-radius: 10px 0px 0px 10px;
+}
+.dl-horizontal dd {
+    border-radius: 0 10px 10px 0;
+}
+.reviewsDiv{
+    margin-bottom:15px;
+    display:flex;
+    flex-direction: column;
+    gap:10px;
+}
+#sub-rev{
+    width:max-content;
+}
+@media (max-width: 990px) {
+    .gridDiv {
+        display: grid;
+        grid-template-columns: 100%;
+    }
+}

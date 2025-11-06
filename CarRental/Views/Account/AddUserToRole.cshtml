@@ -1,0 +1,18 @@
+﻿@model CarRental.Models.AddUsersToRole
+@{
+    ViewBag.Title = "AddUserToRole";
+}
+
+<h2>AddUserToRole</h2>
+
+@using (Html.BeginForm())
+            {
+                <div class="form-group">
+                    @Html.LabelFor(m=> m.Email)
+                    @Html.TextBoxFor(m=>m.Email, new  { @class="form-control"})
+                </div>
+                <div class="form-group">
+                    @Html.DropDownListFor(m=>m.SelectedRole,new SelectList(Model.Roles), new { @class = "form-control" })
+                </div>
+                <button type="submit">Submit</button>
+            }

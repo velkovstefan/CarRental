@@ -1,0 +1,329 @@
+﻿@model IEnumerable<CarRental.Models.RentedCarsViewModel>
+
+@{
+    ViewBag.Title = "MyRentedCars";
+}
+@section HeadStyles {
+    <style>
+        .radioBtnParent {
+            display: flex;
+            gap: 10px;
+        }
+        .radioBtnParent label,
+        .radioBtnParent input {
+            text-align: center;
+            align-items: center;
+            justify-content: center;
+            display: flex;
+            width: 100px;
+            height: 50px;
+            border: 1px solid #CCC;
+            border-radius:10px;
+            padding: 0;
+            cursor: pointer;
+        }
+
+            .radioBtnParent input[type="radio"] {
+                display: none;
+            }
+
+            .radioBtnParent label:hover {
+                background: #DDD;
+            }
+
+            .radioBtnParent input[type="radio"]:checked + label {
+                background: #0d6efd;
+                color: white;
+            }
+
+       
+    </style>
+}
+
+
+
+<div class="radioBtnParent">
+    <input type="radio" id="a25" value="pastCars" name="tableSelector" checked="checked" />
+    <label for="a25" >Past Services</label>
+    <input type="radio" id="a50" value="currentCars" name="tableSelector" />
+    <label for="a50">Current Services</label>
+</div>
+
+<h2 class="heading" id="pastCarsh2">Previously serviced cars</h2>
+<table class="table cars" id="pastCars">
+    <thead>
+        <tr>
+            <th>
+                Cars
+            </th>
+            <th>
+
+            </th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            if (item.IsRented == false && item.DateEnd < DateTime.Today)
+            {
+
+                <tr>
+                    <td>
+                        <img style="width:200px;" src="@item.Car.Image" />
+                    </td>
+                    <td>
+                        <div class="titleParent">
+
+                            <div>
+                                @Html.ActionLink(item.Car.Brand + " " + item.Car.Model, "Details", new { id = item.Car.Id }, new { @class = "CarName" })
+                            </div>
+
+                            <div class="prices">
+                                @Html.DisplayFor(modelItem => item.Car.Price)$
+                            </div>
+                        </div>
+                        <div class="dates">
+                            <span>
+                                @item.DateStart.ToString("d.MM.yyyy")
+                            </span> -
+                            <span>
+                                @item.DateEnd.ToString("d.MM.yyyy")
+                            </span>
+                        </div>
+                        <div class="mainSpecsParent">
+                            <div title="Year">
+                                <i class="fa-solid fa-calendar-days"></i>
+                                @Html.DisplayFor(modelItem => item.Car.Year)
+                            </div>
+                            <div title="Power">
+                                <i class="fa-solid fa-car"></i>
+                                @Html.DisplayFor(modelItem => item.Car.Power)hp
+                            </div>
+                            <div title="Transmission type">
+                                <i class="fa-solid fa-gears"></i>
+                                @Html.DisplayFor(modelItem => item.Car.Transmission)
+                            </div>
+                            <div title="Fuel type">
+                                <i class="fa-solid fa-gas-pump"></i>
+                                @Html.DisplayFor(modelItem => item.Car.FuelType)
+                            </div>
+                            <div title="Fuel consumption">
+                                @Html.DisplayFor(modelItem => item.Car.Consumption)@((item.Car.FuelType=="Electric") ? "Wh/km" : "l /100km")
+                            </div>
+                            <div title="Numder of times this car was rented">
+                                <i class="fa-solid fa-check-to-slot"></i>
+                                @Html.DisplayFor(modelItem => item.Car.NumderOfTimesRented)
+                            </div>
+                            @if (User.IsInRole("Owner") || User.IsInRole("Admin"))
+                            {
+                                <div>
+                                    <i class="fa-solid fa-oil-can"></i>
+                                    @Html.DisplayFor(modelItem => item.Car.NumberOfRentals)
+                                </div>
+                            }
+                        </div>
+
+                        <div class="secondarySpecs">
+                            <div>
+                                @Html.DisplayFor(modelItem => item.Car.NumberOfSeats) Seats
+                            </div>
+                            <div>
+                                @Html.DisplayFor(modelItem => item.Car.NumberOfDoors) Doors
+                            </div>
+                            <div>
+                                @Html.DisplayFor(modelItem => item.Car.CarType)
+                            </div>
+                            <div>
+                                @Html.DisplayFor(modelItem => item.Car.Capacity) @Html.DisplayFor(modelItem => item.Car.Capacity)@((item.Car.FuelType=="Electric") ? "KW/h Battery":"l Fuel Capacity")
+                            </div>
+
+                        </div>
+                        <div class="buttons">
+
+                            @if (@User.IsInRole("Owner") == false)
+                            {
+                                if (@item.IsRented || item.Car.NumberOfRentals == 0)
+                                {
+                                    <button class="form-control rentButton" value="@item.Car.Id" disabled>Rent Again</button>
+                                }
+                                else
+                                {
+                                    <button class="form-control rentButton" value="@item.Car.Id">Rent Again</button>
+                                }
+                            }
+                            <button class="deleteOldRental form-control" value="@item.RentId">Delete</button>
+                        </div>
+
+
+                    </td>
+
+
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<h2 class="heading" id="currentCarsh2">Cars currently on service</h2>
+<table class="table cars" id="currentCars">
+    <thead>
+        <tr>
+            <th>
+                Cars
+            </th>
+            <th>
+
+            </th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            if (item.IsRented == true)
+            {
+
+                <tr>
+                    <td>
+                        <img style="width:200px;" src="@item.Car.Image" />
+                    </td>
+                    <td>
+                        <div class="titleParent">
+
+                            <div>
+                                @Html.ActionLink(item.Car.Brand + " " + item.Car.Model, "Details", new { id = item.Car.Id }, new { @class = "CarName" })
+                            </div>
+
+                            <div class="prices">
+                                @Html.DisplayFor(modelItem => item.Car.Price)$
+                            </div>
+                        </div>
+                        <div class="dates">
+                            <span>
+                                @item.DateStart.ToString("d.MM.yyyy")
+                            </span> -
+                            <span>
+                                @item.DateEnd.ToString("d.MM.yyyy")
+                            </span>
+                        </div>
+                        <div class="mainSpecsParent">
+                            <div title="Year">
+                                <i class="fa-solid fa-calendar-days"></i>
+                                @Html.DisplayFor(modelItem => item.Car.Year)
+                            </div>
+                            <div title="Power">
+                                <i class="fa-solid fa-car"></i>
+                                @Html.DisplayFor(modelItem => item.Car.Power)hp
+                            </div>
+                            <div title="Transmission type">
+                                <i class="fa-solid fa-gears"></i>
+                                @Html.DisplayFor(modelItem => item.Car.Transmission)
+                            </div>
+                            <div title="Fuel type">
+                                <i class="fa-solid fa-gas-pump"></i>
+                                @Html.DisplayFor(modelItem => item.Car.FuelType)
+                            </div>
+                            <div title="Fuel consumption">
+                                @Html.DisplayFor(modelItem => item.Car.Consumption)@((item.Car.FuelType=="Electric") ? "Wh/km" : "l /100km")
+                            </div>
+                            <div title="Numder of times this car was rented">
+                                <i class="fa-solid fa-check-to-slot"></i>
+                                @Html.DisplayFor(modelItem => item.Car.NumderOfTimesRented)
+                            </div>
+                            <!--Number time rented-->
+                            @if (User.IsInRole("Owner") || User.IsInRole("Admin"))
+                            {
+                                <div>
+                                    <i class="fa-solid fa-oil-can"></i>
+                                    @Html.DisplayFor(modelItem => item.Car.NumberOfRentals)
+                                </div>
+                            }
+                        </div>
+
+                        <div class="secondarySpecs">
+                            <div>
+                                @Html.DisplayFor(modelItem => item.Car.NumberOfSeats) Seats
+                            </div>
+                            <div>
+                                @Html.DisplayFor(modelItem => item.Car.NumberOfDoors) Doors
+                            </div>
+                            <div>
+                                @Html.DisplayFor(modelItem => item.Car.CarType)
+                            </div>
+                            <div>
+                                @Html.DisplayFor(modelItem => item.Car.Capacity) @Html.DisplayFor(modelItem => item.Car.Capacity)@((item.Car.FuelType=="Electric") ? "KW/h Battery":"l Fuel Capacity")
+                            </div>
+
+                        </div>
+
+
+
+                    </td>
+
+
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+@section Scripts{
+    @Scripts.Render("/Scripts/CarsScript.js")
+
+    <script>
+        $(document).ready(function () {
+            $(".dataTables_wrapper").hide();
+            $(".heading").hide();
+            let table = $("input[name=tableSelector]:checked").val();
+            $("#" + table).parent().closest(".dataTables_wrapper").show();
+            $("#" + table + "h2").show();
+
+            $("input[name=tableSelector]").on("change", function () {
+                $(".dataTables_wrapper").hide();
+                $(".heading").hide();
+                let table = $(this).val();
+                $("#" + table).parent().closest(".dataTables_wrapper").show();
+                $("#" + table + "h2").show();
+            });
+
+            $(document).on("click", ".deleteOldRental", function () {
+                var button = $(this);
+                console.log($(button).val())
+                bootbox.confirm({
+                    message: "Are you sure you want to delete Service Information?", buttons: {
+                        cancel: {
+                            label: 'No'
+                        },
+                        confirm: {
+                            label: 'Yes'
+                        }
+                    }, callback: function (result) {
+                        if (result) {
+
+                            $.ajax({
+                                url: "/Cars/DeleteRental",
+                                method: "POST",
+                                data: {
+                                    id: $(button).val(),
+
+                                },
+                                success: function () {
+
+                                    $(button).parents("tr").remove();
+                                },
+                                error: function () {
+                                    console.log($(button).val())
+                                }
+
+                            })
+
+                        }
+                    }
+                })
+
+            });
+
+        })
+    </script>
+}

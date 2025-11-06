@@ -1,0 +1,105 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+
+
+    <script src="https://kit.fontawesome.com/51ee220f97.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @RenderSection("HeadStyles", required: false)
+</head>
+<body>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark">
+        <div class="container">
+            @Html.ActionLink("Car Rental", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Toggle navigation" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
+                <ul class="navbar-nav flex-grow-1">
+                    <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li>@Html.ActionLink("About", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li>@Html.ActionLink("Contact", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li>@Html.ActionLink("Cars", "Index", "Cars", new { area = "" }, new { @class = "nav-link" })</li>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                    if (!User.IsInRole("Owner"))
+                    {
+                        <li>@Html.ActionLink("My Rented Cars", "MyRentedCars", "Cars", new { area = "" }, new { @class = "nav-link" })</li>
+
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink("Cars On Service", "ServiceCars", "Cars", new { area = "" }, new { @class = "nav-link" })</li>
+
+                    }
+                    <li>@Html.ActionLink("Add Balance", "AddBalance", "Transactions", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li>@Html.ActionLink("Transactions", "Index", "Transactions", new { area = "" }, new { @class = "nav-link" })</li>
+                    }
+                </ul>
+
+                @Html.Partial("_LoginPartial")
+            </div>
+        </div>
+    </nav>
+    <div class="@(ViewBag.Home != null ? "" : "container body-content")">
+
+
+        @RenderBody()
+        <hr />
+
+    </div>
+        <footer class="bg-light py-5 mt-5">
+            <div class="container">
+                <div class="row gy-4 align-items-center">
+                    <div class="col-md-4">
+                        <h5 class="mb-4 fw-bold">Quick Links</h5>
+                        <ul class="nav flex-column">
+                            <li class="nav-item mb-2">
+                                <a href="/" class="nav-link p-0 text-muted">Home</a>
+                            </li>
+                            <li class="nav-item mb-2">
+                                <a href="/Home/About" class="nav-link p-0 text-muted">About Us</a>
+                            </li>
+                            <li class="nav-item mb-2">
+                                <a href="/Cars" class="nav-link p-0 text-muted">Cars</a>
+                            </li>
+                            <li class="nav-item mb-2">
+                                <a href="/Home/Contact" class="nav-link p-0 text-muted">Contact</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <h5 class="mb-4 fw-bold">Connect With Us</h5>
+                       
+                    </div>
+                    <div class="col-md-4 text-md-end text-center">
+                        <button class="btn btn-primary btn-lg px-4" onclick="window.location.href = '/Account/Login';">
+                            Log In
+                        </button>
+                    </div>
+                </div>
+                <hr class="my-4">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <p class="text-muted mb-0">&copy; @DateTime.Now.Year Car Rental. All rights reserved.</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        
+       
+   
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

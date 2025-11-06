@@ -1,0 +1,93 @@
+﻿@model IEnumerable<CarRental.Models.TransactionViewModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Transaction</h2>
+
+
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Transaction.Reason)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Transaction.Amount)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Transaction.Date)
+        </th>
+        @if (User.IsInRole("Owner") || User.IsInRole("Admin"))
+        {
+            <th>
+                @Html.DisplayNameFor(model => model.Transaction.UserIdFrom)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Transaction.UserIdTo)
+            </th>
+
+        }
+        <th>
+            @Html.DisplayNameFor(model => model.UserNameFrom)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.UserNameTo)
+        </th>
+        <th></th>
+    </tr>
+    @{
+        List<String> users = ViewBag.Owners ;
+
+    }
+    @foreach (var item in Model)
+    {
+        var color = "";
+        if (ViewBag.UserId == item.Transaction.UserIdTo || users.Any(u => u == item.Transaction.UserIdTo) && User.IsInRole("Owner"))
+        {
+            color = "#00800057";
+        }
+        else if (ViewBag.UserId == item.Transaction.UserIdFrom || users.Any(u => u == item.Transaction.UserIdFrom) && User.IsInRole("Owner"))
+        {
+            color = "#ff000059";
+        }
+        <tr style="background-color: @color;">
+            <td>
+                @Html.DisplayFor(modelItem => item.Transaction.Reason)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Transaction.Amount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Transaction.Date)
+            </td>
+            @if (User.IsInRole("Owner") || User.IsInRole("Admin"))
+            {
+                <td>
+                    @Html.DisplayFor(modelItem => item.Transaction.UserIdFrom)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Transaction.UserIdTo)
+                </td>
+
+            }
+            <td>
+                @Html.DisplayFor(modelItem => item.UserNameFrom)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserNameTo)
+            </td>
+            <td>
+
+                @Html.ActionLink("Details", "Details", new { id = item.Transaction.Id })
+                @if (User.IsInRole("Owner") || User.IsInRole("Admin"))
+                {
+                    <span>|</span>
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Transaction.Id })
+                }
+            </td>
+        </tr>
+    }
+
+</table>

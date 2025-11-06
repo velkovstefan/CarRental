@@ -1,0 +1,223 @@
+﻿@model CarRental.Models.DetailsViewModel
+
+@{
+    ViewBag.Title = "Details";
+}
+@section HeadStyles {
+    <style>
+        #reviews {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 0;
+        }
+
+            #reviews li {
+                display: flex;
+                flex-direction: column;
+                list-style: none;
+                background: #f2f1f1;
+                width: 300px;
+                padding: 10px;
+                border-radius: 10px;
+            }
+
+        .dl-horizontal dd, .dl-horizontal dt {
+            padding: 5px;
+            margin: 0;
+        }
+
+            .dl-horizontal dd:nth-of-type(2n+1), .dl-horizontal dt:nth-of-type(2n+1) {
+                background: #41464b;
+                color: #ffffff;
+            }
+    </style>
+}
+<h2>Details</h2>
+
+<div>
+    <hr />
+    <div class="gridDiv">
+        <div class="mainElements">
+            <img style="width:100%;" src="@Model.Car.Image" />
+            <div class="flexMainElement">
+                <h2>@Model.Car.Brand @Model.Car.Model</h2>
+                <h2>@Model.Car.Price$</h2>
+                <div class="">
+
+                    @if (@User.IsInRole("Owner") == false && User.Identity.IsAuthenticated)
+                    {
+
+                        if (1 == 2 && Model.Car.NumberOfRentals == 0)
+                        {
+                            <button class="form-control rentButton" value="@Model.Car.Id" disabled>Rent</button>
+                        }
+                        else
+                        {
+                            <button class="form-control rentButton" value="@Model.Car.Id">Rent</button>
+                        }
+                    }
+
+                </div>
+            </div>
+        </div>
+        <div class="secondartElements">
+            <h4>Specifications</h4>
+            <dl class="dl-horizontal" style="display: grid; grid-template-columns: 50% 50%;">
+                <dt>
+                    @Html.DisplayNameFor(model => model.Car.Year)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Car.Year)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Car.Transmission)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Car.Transmission)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Car.Power)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Car.Power)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Car.Consumption)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Car.Consumption)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Car.FuelType)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Car.FuelType)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Car.NumberOfSeats)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Car.NumberOfSeats)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Car.NumberOfDoors)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Car.NumberOfDoors)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Car.CarType)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Car.CarType)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Car.Capacity)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Car.Capacity)
+                </dd>
+
+
+
+            </dl>
+        </div>
+    </div>
+</div>
+<hr />
+<div class="reviewsDiv">
+    @{
+        float sum = 0;
+        float count = 0;
+        foreach (var r in Model.Reviews)
+        {
+            sum += r.Grade;
+            count++;
+        }
+        }
+        <h3> @(count!=0? "Rating : "+(sum/count).ToString("F1")+"/5":"")</h3>
+        <h3>Leave a review </h3>
+        <label for="grade">Grade</label>
+        <select id="grade" class="form-control">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+        </select>
+        <label for="comment">Comment</label>
+        <textarea id="comment" class="form-control"></textarea>
+        <button id="sub-rev" class="btn btn-primary">Submit Review</button>
+    </div>
+<div>
+    <ul id="reviews">
+        @foreach (var r in Model.Reviews)
+        {
+            <li><h5>Grade: @r.Grade </h5><p>@r.UserName</p>@r.Comment</li>
+        }
+    </ul>
+</div>
+<p>
+    @if (User.IsInRole("Owner") || User.IsInRole("Admin"))
+    {
+        @Html.ActionLink("Edit", "Edit", new { id = Model.Car.Id }) <span>|</span>
+    }
+    @Html.ActionLink("Back to List", "Index")
+</p>
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $("#cars").DataTable();
+
+            $(document).on("click", "#sub-rev", function () {
+                        $.ajax({
+                            url: "/Cars/AddReview",
+                            method: "POST",
+                            data: {
+                                carId: @Model.Car.Id,
+                                grade: $("#grade").val(),
+                                comment: $("#comment").val()
+                            },
+                            success: function (result) {
+                                console.log(result);
+                                if (result.hasOwnProperty("CarId")){
+                                    $("#reviews").prepend("<li><h5>Grade:" + result.Grade + "</h5><p>" + result.UserName +"</p>"+result.Comment+"</li>");
+                                }
+                                else {
+                                    bootbox.alert(result.message);
+                                }
+                            },
+                            error: function (result) {
+                                console.log(result);
+                            }
+
+                        })
+
+            })
+        });
+    </script>
+    
+   @Scripts.Render("/Scripts/CarsScript.js")
+
+    
+}

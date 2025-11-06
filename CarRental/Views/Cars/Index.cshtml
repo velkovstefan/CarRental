@@ -1,0 +1,268 @@
+﻿@model IEnumerable<CarRental.Models.CarsViewModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Rentals</h2>
+
+<p>
+    @if (User.IsInRole("Owner") || User.IsInRole("Admin"))
+    {
+        @Html.ActionLink("Create New", "Create")
+    }
+</p>
+
+@Html.AntiForgeryToken()
+<div class="gridContainer">
+
+
+    <form class="container" method="get">
+        <h5>Filter</h5>
+        <div class="row">
+            <select name="brand" class="form-control" value="">
+                <option value="">All Brands</option>
+                @foreach (var item in ViewBag.CarBrands)
+                {
+
+                    if (item.Brand == @Request.QueryString["brand"])
+                    {
+                        <option value="@item.Brand" selected>@item.Brand</option>
+                    }
+                    else
+                    {
+                        <option value="@item.Brand">@item.Brand</option>
+                    }
+
+                }
+            </select>
+        </div>
+        <div class="row">
+            <input type="number" name="minYear" class="form-control col me-1" value="@Request.QueryString["minYear"]" placeholder="Year From" />
+            <input type="number" name="maxYear" class="form-control col" value="@Request.QueryString["maxYear"]" placeholder="Year To" />
+        </div>
+        <div class="row">
+            <input type="number" name="minPrice" id="minPrice" class="form-control col me-1" value="@Request.QueryString["minPrice"]" placeholder="Min Price" />
+            <input type="number" name="maxPrice" id="maxPrice" class="form-control col" value="@Request.QueryString["maxPrice"]" placeholder="Max Price" />
+        </div>
+        <div class="row">
+            <input type="number" name="minPower" class="form-control col me-1" value="@Request.QueryString["minPower"]" placeholder="Min Power" />
+            <input type="number" name="maxPower" class="form-control col" value="@Request.QueryString["maxPower"]" placeholder="Max Power" />
+        </div>
+        <div class="row">
+            <input type="number" name="maxConsumption" class="form-control col me-1" value="@Request.QueryString["maxConsumption"]" placeholder="Max Consumption" />
+            <input type="number" name="minCapacity" class="form-control col" value="@Request.QueryString["minCapacity"]" placeholder="Min Capacity" />
+        </div>
+        <div class="row">
+            <select name="carType" class="form-control col me-1" value="">
+                <option value="">All Types</option>
+                @foreach (var item in ViewBag.CarTypes)
+                {
+
+                    if (item == @Request.QueryString["carType"])
+                    {
+                        <option value="@item" selected>@item</option>
+                    }
+                    else
+                    {
+                        <option value="@item">@item</option>
+                    }
+
+                }
+            </select>
+            <select name="fuelType" class="form-control col fuelType" value="">
+                <option value="">All Fuel Types</option>
+                @foreach (var item in ViewBag.FuelTypes)
+                {
+
+                    if (item == @Request.QueryString["fuelType"])
+                    {
+                        <option value="@item" selected>@item</option>
+                    }
+                    else
+                    {
+                        <option value="@item">@item</option>
+                    }
+
+                }
+            </select>
+        </div>
+        <div class="row">
+            <select name="numDoors" class="form-control col me-1" value="">
+                <option value="">Number Of Doors</option>
+                @foreach (int item in ViewBag.NumDoors)
+                {
+
+                    if (item.ToString() == @Request.QueryString["numDoors"])
+                    {
+                        <option value="@item" selected>@item</option>
+                    }
+                    else
+                    {
+                        <option value="@item">@item</option>
+                    }
+
+                }
+            </select>
+            <input type="number" name="numSeats" class="form-control col" value="@Request.QueryString["numSeats"]" placeholder="Number Of Seats" />
+        </div>
+        <div class="row">
+            <select name="transmission" class="form-control transmission" value="" @(Request.QueryString["fuelType"]=="Electric" ? "disabled" : "") >
+                <option value="">All Transmissions</option>
+                @foreach (var item in ViewBag.Transmissions)
+                {
+
+                    if (item == @Request.QueryString["transmission"])
+                    {
+                        <option value="@item" selected>@item</option>
+                    }
+                    else
+                    {
+                        <option value="@item">@item</option>
+                    }
+
+                }
+            </select>
+        </div>
+            <div class="row">
+                <div class="col">
+                    <input type="checkbox" name="onlyRentable" id="onlyRentable" @(Request.QueryString["onlyRentable"] == "on" ? "checked=\"checked\"" : "") />
+                    <label for="onlyRentable">Show Only Cars That Are Now Available</label>
+                </div>
+            </div>
+            <div class="row">
+                <button class="btn btn-primary">Submit</button>
+            </div>
+    </form>
+    <table class="table cars" id="cars">
+        <thead>
+            <tr>
+                <th>
+                    Offers
+                </th>
+                <th>
+
+                </th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        <img style="width:200px;" src="@item.Car.Image" />
+                    </td>
+                    <td>
+                        <div class="titleParent">
+
+                            <div>
+                                @Html.ActionLink(item.Car.Brand + " " + item.Car.Model, "Details", new { id = item.Car.Id }, new { @class = "CarName" })
+                            </div>
+
+                            <div class="prices">
+                                @Html.DisplayFor(modelItem => item.Car.Price)$
+                            </div>
+                        </div>
+
+                        <div class="mainSpecsParent">
+                            <div title="Year">
+                                <i class="fa-solid fa-calendar-days"></i>
+                                @Html.DisplayFor(modelItem => item.Car.Year)
+                            </div>
+                            <div title="Power">
+                                <i class="fa-solid fa-car"></i>
+                                @Html.DisplayFor(modelItem => item.Car.Power)hp
+                            </div>
+                            <div title="Transmission type">
+                                <i class="fa-solid fa-gears"></i>
+                                @Html.DisplayFor(modelItem => item.Car.Transmission)
+                            </div>
+                            <div title="Fuel type">
+                                <i class="fa-solid fa-gas-pump"></i>
+                                @Html.DisplayFor(modelItem => item.Car.FuelType)
+                            </div>
+                            <div title="Fuel consumption">
+                                @Html.DisplayFor(modelItem => item.Car.Consumption)@((item.Car.FuelType=="Electric") ? "Wh/km" : "l /100km")
+                            </div>
+                            <div title="Numder of times this car was rented">
+                                <i class="fa-solid fa-check-to-slot"></i>
+                                @Html.DisplayFor(modelItem => item.Car.NumderOfTimesRented)
+                            </div>
+                            <!--Number time rented-->
+                            @if (User.IsInRole("Owner") || User.IsInRole("Admin"))
+                            {
+                                <div>
+                                    <i class="fa-solid fa-oil-can"></i>
+                                    @Html.DisplayFor(modelItem => item.Car.NumberOfRentals)
+                                </div>
+                            }
+                        </div>
+
+                        <div class="secondarySpecs">
+                            <div>
+                                @Html.DisplayFor(modelItem => item.Car.NumberOfSeats) Seats
+                            </div>
+                            <div>
+                                @Html.DisplayFor(modelItem => item.Car.NumberOfDoors) Doors
+                            </div>
+                            <div>
+                                @Html.DisplayFor(modelItem => item.Car.CarType)
+                            </div>
+                            <div>
+                                @Html.DisplayFor(modelItem => item.Car.Capacity)@((item.Car.FuelType=="Electric") ? "KW/h Battery":"l Fuel Capacity")
+                            </div>
+
+                        </div>
+                        <div class="buttons">
+
+                            @if (User.IsInRole("Owner") || User.IsInRole("Admin"))
+                            {
+                                if (@item.IsRented)
+                                {
+                                    <button class="form-control serviceButton" value="@item.Car.Id" disabled>Service</button>
+                                }
+                                else
+                                {
+                                    <button class="form-control serviceButton" value="@item.Car.Id">Service</button>
+                                }
+                            }
+
+                            @if (@User.IsInRole("Owner") == false && User.Identity.IsAuthenticated)
+                            {
+
+                                if (1 == 2 && item.Car.NumberOfRentals == 0)
+                                {
+                                    <button class="form-control rentButton" value="@item.Car.Id" disabled>Rent</button>
+                                }
+                                else
+                                {
+                                    <button class="form-control rentButton" value="@item.Car.Id">Rent</button>
+                                }
+                            }
+
+
+                            @if (User.IsInRole("Owner") || User.IsInRole("Admin"))
+                            {
+
+
+                                @Html.ActionLink("Edit", "Edit", new { id = item.Car.Id }, new { @class = "btn border" })
+                                <button class="delete form-control" value="@item.Car.Id">Delete</button>
+
+
+                            }
+                        </div>
+
+
+                    </td>
+
+
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@section Scripts{
+    @Scripts.Render("/Scripts/CarsScript.js")
+
+}

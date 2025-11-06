@@ -1,0 +1,67 @@
+﻿.titleParent {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+.title{
+
+}
+/*tbody tr:nth-child(1) {
+    width: 200px !important;
+}*/
+.prices {
+    font-size: 20px;
+    font-weight: 700;
+    color: #333333;
+}
+.cars thead tr th:first-child {
+    width: 200px !important;
+}
+.mainSpecsParent {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+.secondarySpecs {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+.secondarySpecs div {
+        
+        font-size:12px;
+        color:dimgrey;
+    
+    }
+.mainSpecsParent div {
+    font-size: 14px;
+    background: #41464b;
+    color: #ffffff;
+    padding: 0px 5px;
+    border-radius: 20px;
+}
+   
+    .secondarySpecs div::before {
+        content: " · ";
+        font-weight:900;
+    }
+    .buttons{
+        display:flex;
+        margin-top: 10px;
+        gap:5px;
+        justify-content:end;
+    }
+        .buttons button {
+        width:max-content;
+        }
+.gridContainer {
+    display: grid;
+    grid-template-columns: 30% auto;
+}
+@media (max-width: 990px) {
+    .gridContainer {
+        display: grid;
+        grid-template-columns: 100%;
+    }
+}
